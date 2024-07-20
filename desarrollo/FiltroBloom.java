@@ -43,7 +43,6 @@ public class FiltroBloom {
         for (int index : hashIndices) {
             total+=mArray[index];
         }
-        System.out.println(total==k);
         return total==k;
     }
 }

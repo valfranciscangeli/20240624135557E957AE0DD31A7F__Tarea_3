@@ -3,8 +3,6 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.*;
 
 import desarrollo.FiltroBloom;
@@ -27,14 +25,16 @@ public class Experimento {
 
     public static void main(String[] args) throws NoSuchAlgorithmException {
         String path = "archivos/Popular-Baby-Names-Final.csv";
+        String namesPath ="archivos/Film-Names.csv";
         List<String> nombres = cargarNombres(path);
+        List<String> nombresABuscar = cargarNombres(namesPath);
 
         int[] nValues = {1024, 4096, 16384, 65536};
         double[] proporciones = {0, 0.25, 0.5, 0.75, 1};
 
         for (int size : nValues) {
             for (double p : proporciones) {
-                List<String> palabrasABuscar = generateWordsToSearch(nombres, size, p);
+                List<String> palabrasABuscar = generateWordsToSearch(nombresABuscar, size, p);
                 
                 // sin filtro de Bloom
                 long inicio = System.currentTimeMillis();
@@ -76,13 +76,15 @@ public class Experimento {
         return names;
     }
 
-    private static List<String> generateWordsToSearch(List<String> allNames, int size, double proportion) {
+    private static List<String> generateWordsToSearch(List<String> names, int size, double proportion) {
+        
         List<String> palabrasABuscar = new ArrayList<>();
-        int inFileCount = (int) (size * proportion);
+        size= Math.min(size,names.size() );
+        int inFileCount =(int) (size * proportion);
         int outFileCount = size - inFileCount;
 
         for (int i = 0; i < inFileCount; i++) {
-            palabrasABuscar.add(allNames.get(i));
+            palabrasABuscar.add(names.get(i));
         }
         for (int i = 0; i < outFileCount; i++) {
             palabrasABuscar.add("NonExistentName" + i);
